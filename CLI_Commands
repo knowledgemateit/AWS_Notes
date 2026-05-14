@@ -1,0 +1,121 @@
+🏗️ 1. VPC & Networking (The Foundation)
+Create VPC: aws ec2 create-vpc --cidr-block 10.0.0.0/16
+
+Create Subnet: aws ec2 create-subnet --vpc-id vpc-123 --cidr-block 10.0.1.0/24
+
+Create Internet Gateway: aws ec2 create-internet-gateway
+
+Attach IGW to VPC: aws ec2 attach-internet-gateway --internet-gateway-id igw-123 --vpc-id vpc-123
+
+Describe Route Tables: aws ec2 describe-route-tables
+
+Check Security Groups: aws ec2 describe-security-groups
+
+Authorize Port 80 (Inbound): aws ec2 authorize-security-group-ingress --group-id sg-123 --protocol tcp --port 80 --cidr 0.0.0.0/0
+
+🖥️ 2. EC2 & Compute (The Muscle)
+List Instances: aws ec2 describe-instances --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress]' --output table
+
+Start Instance: aws ec2 start-instances --instance-ids i-123
+
+Stop Instance: aws ec2 stop-instances --instance-ids i-123
+
+Terminate Instance: aws ec2 terminate-instances --instance-ids i-123
+
+Describe Key Pairs: aws ec2 describe-key-pairs
+
+Monitor CPU Usage: aws ec2 monitor-instances --instance-ids i-123
+
+Get Console Output (Debug Logs): aws ec2 get-console-output --instance-id i-123
+
+💾 3. EBS, Snapshots & AMI (Storage)
+List Volumes: aws ec2 describe-volumes
+
+Create Volume: aws ec2 create-volume --availability-zone us-east-1a --size 10 --volume-type gp3
+
+Attach Volume: aws ec2 attach-volume --volume-id vol-123 --instance-id i-123 --device /dev/sdf
+
+Create Snapshot: aws ec2 create-snapshot --volume-id vol-123 --description "Prod Backup"
+
+List AMIs (Private): aws ec2 describe-images --owners self
+
+Create AMI from EC2: aws ec2 create-image --instance-id i-123 --name "Gold-Image-V1"
+
+Copy AMI to another Region: aws ec2 copy-image --source-region us-east-1 --source-image-id ami-123 --name "DR-Image"
+
+🚥 4. Load Balancing & Autoscaling (Resilience)
+List ALBs: aws elbv2 describe-load-balancers
+
+Check Target Health: aws elbv2 describe-target-health --target-group-arn arn-123
+
+Describe Listeners: aws elbv2 describe-listeners --load-balancer-arn arn-123
+
+List ASGs: aws autoscaling describe-auto-scaling-groups
+
+Update Capacity: aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-asg --min-size 2 --max-size 5
+
+Detach Instance from ASG: aws autoscaling detach-instances --instance-ids i-123 --auto-scaling-group-name my-asg --should-decrement-desired-capacity
+
+🗄️ 5. S3 (Object Storage)
+List Buckets: aws s3 ls
+
+List Bucket Contents: aws s3 ls s3://my-bucket-name
+
+Upload File: aws s3 cp file.txt s3://my-bucket-name
+
+Download File: aws s3 cp s3://my-bucket-name/file.txt ./
+
+Sync Folder: aws s3 sync ./local-folder s3://my-bucket-name
+
+Empty a Bucket: aws s3 rm s3://my-bucket-name --recursive
+
+Bucket Size Check: aws s3api list-objects --bucket my-bucket-name --output json --query "[sum(Contents[].Size)]"
+
+🛢️ 6. RDS (Database)
+Describe DBs: aws rds describe-db-instances
+
+Check DB Snapshots: aws rds describe-db-snapshots
+
+Stop DB (Save Cost): aws rds stop-db-instance --db-instance-identifier my-db
+
+Create DB Snapshot: aws rds create-db-snapshot --db-instance-identifier my-db --db-snapshot-identifier my-backup
+
+🛡️ 7. IAM (Identity & Access)
+List IAM Users: aws iam list-users
+
+Create User: aws iam create-user --user-name Student-A
+
+List User Policies: aws iam list-attached-user-policies --user-name Student-A
+
+Check Current Identity: aws sts get-caller-identity (Important for debugging "Access Denied")
+
+🔔 8. CloudWatch & SNS (Monitoring)
+List Alarms: aws cloudwatch describe-alarms
+
+List Log Groups: aws logs describe-log-groups
+
+Tail Logs (Real-time): aws logs tail /aws/lambda/my-func --follow
+
+List SNS Topics: aws sns list-topics
+
+Subscribe to Topic: aws sns subscribe --topic-arn arn-123 --protocol email --notification-endpoint student@email.com
+
+🏗️ 9. CloudFormation & Route53
+List Stacks: aws cloudformation list-stacks
+
+Describe Stack Resources: aws cloudformation describe-stack-resources --stack-name my-stack
+
+List Zones: aws route53 list-hosted-zones
+
+Check DNS Records: aws route53 list-resource-record-sets --hosted-zone-id zone-123
+
+🐧 10. Linux SRE Commands (Bonus)
+Check Port Listening: netstat -tulnp | grep 80
+
+Check System Logs: tail -f /var/log/messages or journalctl -u httpd
+
+Check Instance Metadata: curl [http://169.254.169.254/latest/meta-data/](http://169.254.169.254/latest/meta-data/)
+
+Find Big Files: du -sh * | sort -hr
+
+Force Kill Process: kill -9 <PID>
