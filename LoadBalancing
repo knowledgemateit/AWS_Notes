@@ -1,61 +1,27 @@
+ALB:
+
+
+Server1:
 yum install httpd -y
-systemctl start httpd
-vi /var/www/html/index.html
+echo "<h1> Node 01 - IP: $(hostname -I)</h1>" | sudo tee /var/www/html/index.html
 systemctl restart httpd
-systemctl status httpd
+
+Server2:
+yum install httpd -y
+echo "<h1> Node 02 - IP: $(hostname -I)</h1>" | sudo tee /var/www/html/index.html
+systemctl restart httpd
 
 
-cat <<EOF > /var/www/html/index.html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CloudScale IQ | Production Server</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; text-align: center; padding: 50px; }
-        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: inline-block; border-top: 8px solid #232f3e; }
-        h1 { color: #232f3e; margin-bottom: 10px; }
-        .status-badge { background-color: #28a745; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; text-transform: uppercase; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; text-align: left; }
-        .info-item { border-left: 4px solid #ff9900; padding-left: 10px; }
-        .footer { margin-top: 40px; font-size: 0.8em; color: #777; }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS Logo" width="80">
-        <h1>Server Node: <span id="node-name">PROD-WEB-01</span></h1>
-        <span class="status-badge">Healthy & Active</span>
-
-        <div class="info-grid">
-            <div class="info-item">
-                <strong>Availability Zone:</strong><br>
-                <span>us-east-1a</span>
-            </div>
-            <div class="info-item">
-                <strong>Environment:</strong><br>
-                <span>Production (VPC-Custom)</span>
-            </div>
-        </div>
-
-        <p>This server is part of a <strong>Self-Healing Autoscaling Group</strong> managed by an <strong>Application Load Balancer</strong>.</p>
-        
-        <button onclick="checkHealth()">Simulate Health Check</button>
-    </div>
-
-    <div class="footer">
-        Managed by CloudScale IQ SRE Team | &copy; 2026
-    </div>
-
-    <script>
-        function checkHealth() {
-            alert("Health Check 200 OK: Traffic is being distributed via ALB.");
-        }
-    </script>
-</body>
-</html>
-EOF
 
 systemctl restart httpd
+
+NLB:
+Server1:
+sudo yum install nginx -y   # For Amazon Linux 2
+echo "<h1> Node 01 - IP: $(hostname -I)</h1>" | sudo tee /usr/share/nginx/html/index.html
+sudo systemctl restart nginx
+
+server2:
+sudo yum install nginx -y 
+echo "<h1> Node 02 - IP: $(hostname -I)</h1>" | sudo tee /usr/share/nginx/html/index.html
+sudo systemctl restart nginx
